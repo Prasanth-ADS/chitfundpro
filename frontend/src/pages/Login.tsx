@@ -47,8 +47,9 @@ export function Login() {
     try {
       await api.post("/api/auth/login", { email, password });
       navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid email or password");
+    } catch (err: any) {
+      console.error('Login error:', err.response?.data || err.message);
+      setError(err.response?.data?.message || "Invalid email or password");
     }
   };
 
