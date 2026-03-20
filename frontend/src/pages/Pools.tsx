@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { useState } from 'react';
 import { Plus, Pencil, Trash2, X, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Link } from 'react-router-dom';
 
-const API = 'http://localhost:5000/api/pools';
+
 
 interface Scheme { id: string; name: string; }
 interface Pool {
@@ -43,16 +43,16 @@ export function Pools() {
 
   const { data: pools, isLoading } = useQuery<Pool[]>({
     queryKey: ['pools'],
-    queryFn: async () => (await axios.get(API, { withCredentials: true })).data
+    queryFn: async () => (await api.get('/api/pools')).data
   });
 
   const { data: schemes } = useQuery<Scheme[]>({
     queryKey: ['schemes-meta'],
-    queryFn: async () => (await axios.get('http://localhost:5000/api/schemes', { withCredentials: true })).data
+    queryFn: async () => (await api.get('/api/schemes')).data
   });
 
   const createPool = useMutation({
-    mutationFn: async () => axios.post(API, { name: newName, schemeId: newSchemeId, startDate: newStartDate }, { withCredentials: true }),
+    mutationFn: async () => api.post('/api/pools', { name: newName, schemeId: newSchemeId, startDate: newStartDate }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pools'] });
       setIsCreating(false); setNewName(''); setNewSchemeId(''); setNewStartDate('');
@@ -61,13 +61,13 @@ export function Pools() {
   });
 
   const updatePool = useMutation({
-    mutationFn: async (id: string) => axios.put(`${API}/${id}`, { name: editName, status: editStatus, startDate: editStartDate }, { withCredentials: true }),
+    mutationFn: async (id: string) => api.put(`/api/pools/${id}`, { name: editName, status: editStatus, startDate: editStartDate }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['pools'] }); setEditingId(null); },
     onError: (e: any) => alert(e.response?.data?.message || 'Failed to update pool')
   });
 
   const deletePool = useMutation({
-    mutationFn: async (id: string) => axios.delete(`${API}/${id}`, { withCredentials: true }),
+    mutationFn: async (id: string) => api.delete(`/api/pools/${id}`),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['pools'] }); setDeleteConfirmId(null); },
     onError: (e: any) => alert(e.response?.data?.message || 'Failed to delete pool')
   });

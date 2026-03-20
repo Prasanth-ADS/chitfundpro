@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function PaymentEntryModal({ isOpen, onClose, memberData, month }: any) {
@@ -32,7 +32,7 @@ export function PaymentEntryModal({ isOpen, onClose, memberData, month }: any) {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      await axios.post('http://localhost:5000/api/payments', {
+      await api.post('/api/payments', {
         enrollmentId: memberData.enrollmentId,
         month,
         amountDue: memberData.amountDue,
@@ -42,7 +42,7 @@ export function PaymentEntryModal({ isOpen, onClose, memberData, month }: any) {
         status: formData.status,
         notes: formData.notes,
         paymentDate: formData.paymentDate
-      }, { withCredentials: true });
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pool-payments'] });

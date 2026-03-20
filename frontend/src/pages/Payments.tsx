@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 import { PaymentEntryModal } from '../components/PaymentEntryModal';
 import { Activity, Banknote, Landmark, Smartphone } from 'lucide-react';
 
@@ -15,7 +14,7 @@ export function Payments() {
   const { data: pools } = useQuery({
     queryKey: ['pools'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/pools', { withCredentials: true });
+      const res = await api.get('/api/pools');
       return res.data;
     }
   });
@@ -23,7 +22,7 @@ export function Payments() {
   const { data: summary } = useQuery({
     queryKey: ['daily-summary'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/payments/summary/daily', { withCredentials: true });
+      const res = await api.get('/api/payments/summary/daily');
       return res.data;
     }
   });
@@ -33,7 +32,7 @@ export function Payments() {
   const { data: membersStatus, isLoading } = useQuery({
     queryKey: ['pool-payments', selectedPoolId, selectedPool?.currentMonth],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/payments/pool/${selectedPoolId}/month/${selectedPool?.currentMonth || 1}`, { withCredentials: true });
+      const res = await api.get(`/api/payments/pool/${selectedPoolId}/month/${selectedPool?.currentMonth || 1}`);
       return res.data;
     },
     enabled: !!selectedPoolId
@@ -41,7 +40,7 @@ export function Payments() {
 
   const quickPayMutation = useMutation({
     mutationFn: async (member: any) => {
-      await axios.post('http://localhost:5000/api/payments', {
+      await api.post('/api/payments', {
         enrollmentId: member.enrollmentId,
         month: selectedPool?.currentMonth,
         amountDue: member.amountDue,
@@ -50,7 +49,7 @@ export function Payments() {
         paymentMode: 'CASH',
         status: 'PAID',
         notes: 'Quick Pay',
-      }, { withCredentials: true });
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pool-payments'] });

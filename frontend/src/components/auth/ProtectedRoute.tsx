@@ -1,12 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "../../lib/api";
 
 export function ProtectedRoute() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['auth-me'],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:5000/api/auth/me", { withCredentials: true });
+      const res = await api.get("/api/auth/me");
       return res.data;
     },
     retry: false

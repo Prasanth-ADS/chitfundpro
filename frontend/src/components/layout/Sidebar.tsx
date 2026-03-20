@@ -10,7 +10,7 @@ import {
   LogOut
 } from "lucide-react";
 import { cn } from "../../lib/utils";
-import axios from "axios";
+import api from "../../lib/api";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -28,7 +28,7 @@ export function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true });
+      await api.post("/api/auth/logout", {});
       navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);

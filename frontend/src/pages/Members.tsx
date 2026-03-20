@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Pencil, Trash2, Plus, X, Check } from 'lucide-react';
@@ -7,7 +7,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 
-const API = 'http://localhost:5000/api/members';
+
 
 interface Member {
   id: string;
@@ -42,13 +42,13 @@ export function Members() {
   const { data: members, isLoading } = useQuery<Member[]>({
     queryKey: ['members'],
     queryFn: async () => {
-      const res = await axios.get(API, { withCredentials: true });
+      const res = await api.get('/api/members');
       return res.data;
     }
   });
 
   const createMember = useMutation({
-    mutationFn: async () => axios.post(API, formData, { withCredentials: true }),
+    mutationFn: async () => api.post('/api/members', formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
       setIsAdding(false);
@@ -58,7 +58,7 @@ export function Members() {
   });
 
   const updateMember = useMutation({
-    mutationFn: async (id: string) => axios.put(`${API}/${id}`, editData, { withCredentials: true }),
+    mutationFn: async (id: string) => api.put(`/api/members/${id}`, editData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
       setEditingId(null);
@@ -67,7 +67,7 @@ export function Members() {
   });
 
   const deleteMember = useMutation({
-    mutationFn: async (id: string) => axios.delete(`${API}/${id}`, { withCredentials: true }),
+    mutationFn: async (id: string) => api.delete(`/api/members/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
       setDeleteConfirmId(null);

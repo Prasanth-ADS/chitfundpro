@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { 
   Users, 
   Coins, 
@@ -15,7 +15,7 @@ export function Dashboard() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/dashboard/stats', { withCredentials: true });
+      const res = await api.get('/api/dashboard/stats');
       return res.data;
     }
   });

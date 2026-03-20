@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ArrowLeft, Printer, Trophy } from 'lucide-react';
@@ -15,7 +15,7 @@ export function MemberDetail() {
   const { data: member, isLoading } = useQuery({
     queryKey: ['member', id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/members/${id}`, { withCredentials: true });
+      const res = await api.get(`/api/members/${id}`);
       return res.data;
     }
   });
@@ -23,7 +23,7 @@ export function MemberDetail() {
   const { data: riskData, isLoading: isLoadingRisk } = useQuery({
     queryKey: ['member-risk', id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/ai/risk/${id}`, { withCredentials: true });
+      const res = await api.get(`/api/ai/risk/${id}`);
       return res.data;
     }
   });
@@ -31,14 +31,14 @@ export function MemberDetail() {
   const { data: pools } = useQuery({
     queryKey: ['pools'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/pools', { withCredentials: true });
+      const res = await api.get('/api/pools');
       return res.data;
     }
   });
 
   const enrollMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post('http://localhost:5000/api/enrollments', { memberId: id, poolId: selectedPoolId }, { withCredentials: true });
+      const res = await api.post('/api/enrollments', { memberId: id, poolId: selectedPoolId });
       return res.data;
     },
     onSuccess: () => {
@@ -53,7 +53,7 @@ export function MemberDetail() {
 
   const payMutation = useMutation({
     mutationFn: async ({ enrollmentId, month, amount }: any) => {
-      await axios.post('http://localhost:5000/api/payments', { enrollmentId, month, amount }, { withCredentials: true });
+      await api.post('/api/payments', { enrollmentId, month, amount });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['member', id] });

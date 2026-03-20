@@ -21,7 +21,12 @@ import { initWhatsApp } from './services/whatsapp';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite default port
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL || '',
+    /\.vercel\.app$/
+  ],
   credentials: true,
 }));
 app.use(express.json());

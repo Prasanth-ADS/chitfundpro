@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { 
   FileText, 
   Download, 
@@ -34,7 +34,7 @@ export function Reports() {
   const { data: members } = useQuery({
     queryKey: ['members'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/members', { withCredentials: true });
+      const res = await api.get('/api/members');
       return res.data;
     }
   });
@@ -42,7 +42,7 @@ export function Reports() {
   const { data: pools } = useQuery({
     queryKey: ['pools'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/pools', { withCredentials: true });
+      const res = await api.get('/api/pools');
       return res.data;
     }
   });
@@ -53,21 +53,21 @@ export function Reports() {
       let url = '';
       if (reportType === 'passbook') {
         if (!filters.memberId || !filters.poolId) return null;
-        url = `http://localhost:5000/api/reports/member-passbook/${filters.memberId}/${filters.poolId}`;
+        url = `/api/reports/member-passbook/${filters.memberId}/${filters.poolId}`;
       } else if (reportType === 'pool-summary') {
         if (!filters.poolId) return null;
-        url = `http://localhost:5000/api/reports/pool-summary/${filters.poolId}`;
+        url = `/api/reports/pool-summary/${filters.poolId}`;
       } else if (reportType === 'defaulters') {
-        url = `http://localhost:5000/api/reports/defaulters`;
+        url = `/api/reports/defaulters`;
       } else if (reportType === 'collection') {
-        url = `http://localhost:5000/api/reports/monthly-collection?month=${filters.month}&year=${filters.year}`;
+        url = `/api/reports/monthly-collection?month=${filters.month}&year=${filters.year}`;
       } else if (reportType === 'closure') {
         if (!filters.poolId) return null;
-        url = `http://localhost:5000/api/reports/pool-closure/${filters.poolId}`;
+        url = `/api/reports/pool-closure/${filters.poolId}`;
       } else if (reportType === 'profit') {
-        url = `http://localhost:5000/api/reports/yearly-profit?year=${filters.year}`;
+        url = `/api/reports/yearly-profit?year=${filters.year}`;
       }
-      const res = await axios.get(url, { withCredentials: true });
+      const res = await api.get(url);
       return res.data;
     },
     enabled: !!reportType

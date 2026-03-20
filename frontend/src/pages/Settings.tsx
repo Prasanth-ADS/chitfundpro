@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { Save, Bell, Smartphone, Send, Clock, CheckCircle, XCircle, Wifi, QrCode, LogOut } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '../components/ui/button';
@@ -9,12 +9,11 @@ import { Input } from '../components/ui/input';
 
 export function Settings() {
   const queryClient = useQueryClient();
-  const [testPhone, setTestPhone] = useState('');
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/settings', { withCredentials: true });
+      const res = await api.get('/api/settings');
       return res.data;
     }
   });
@@ -22,7 +21,7 @@ export function Settings() {
   const { data: logs } = useQuery({
     queryKey: ['notification-logs'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/notifications/log', { withCredentials: true });
+      const res = await api.get('/api/notifications/log');
       return res.data;
     },
     refetchInterval: 10000 // Poll every 10s for new logs
@@ -31,7 +30,7 @@ export function Settings() {
   const { data: whatsappStatus } = useQuery({
     queryKey: ['whatsapp-status'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/whatsapp/status', { withCredentials: true });
+      const res = await api.get('/api/whatsapp/status');
       return res.data;
     },
     refetchInterval: 3000 // Poll every 3s to get QR code instantly
@@ -39,7 +38,7 @@ export function Settings() {
 
   const logoutWhatsAppMutation = useMutation({
     mutationFn: async () => {
-      await axios.post('http://localhost:5000/api/whatsapp/logout', {}, { withCredentials: true });
+      await api.post('/api/whatsapp/logout', {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['whatsapp-status'] });
@@ -48,7 +47,7 @@ export function Settings() {
 
   const saveSettingsMutation = useMutation({
     mutationFn: async (updatedSettings: any) => {
-      const res = await axios.put('http://localhost:5000/api/settings', updatedSettings, { withCredentials: true });
+      const res = await api.put('/api/settings', updatedSettings);
       return res.data;
     },
     onSuccess: () => {
@@ -62,7 +61,7 @@ export function Settings() {
 
   const sendTestMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post('http://localhost:5000/api/notifications/test', {}, { withCredentials: true });
+      const res = await api.post('/api/notifications/test', {});
       return res.data;
     },
     onSuccess: (data) => {
@@ -80,7 +79,7 @@ export function Settings() {
 
   const sendNowMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post('http://localhost:5000/api/notifications/send-now', {}, { withCredentials: true });
+      const res = await api.post('/api/notifications/send-now', {});
       return res.data;
     },
     onSuccess: () => {

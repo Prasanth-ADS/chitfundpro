@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { useState } from 'react';
 import { Plus, Pencil, Trash2, X, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 
-const API = 'http://localhost:5000/api/schemes';
+
 
 interface Scheme {
   id: string; name: string; poolAmount: number;
@@ -31,14 +31,14 @@ export function Schemes() {
 
   const { data: schemes, isLoading } = useQuery<Scheme[]>({
     queryKey: ['schemes'],
-    queryFn: async () => (await axios.get(API, { withCredentials: true })).data
+    queryFn: async () => (await api.get('/api/schemes')).data
   });
 
   const createScheme = useMutation({
-    mutationFn: async () => axios.post(API, {
+    mutationFn: async () => api.post('/api/schemes', {
       name: newName, poolAmount: Number(newPoolAmount),
       numberOfMembers: Number(newMembers), numberOfMonths: Number(newMonths)
-    }, { withCredentials: true }),
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schemes'] });
       queryClient.invalidateQueries({ queryKey: ['schemes-meta'] });
@@ -48,7 +48,7 @@ export function Schemes() {
   });
 
   const updateScheme = useMutation({
-    mutationFn: async (id: string) => axios.put(`${API}/${id}`, { name: editName }, { withCredentials: true }),
+    mutationFn: async (id: string) => api.put(`/api/schemes/${id}`, { name: editName }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schemes'] });
       queryClient.invalidateQueries({ queryKey: ['schemes-meta'] });
@@ -58,7 +58,7 @@ export function Schemes() {
   });
 
   const deleteScheme = useMutation({
-    mutationFn: async (id: string) => axios.delete(`${API}/${id}`, { withCredentials: true }),
+    mutationFn: async (id: string) => api.delete(`/api/schemes/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schemes'] });
       queryClient.invalidateQueries({ queryKey: ['schemes-meta'] });

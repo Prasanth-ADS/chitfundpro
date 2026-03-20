@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { MessageCircle, X, Send, Bot, User, Loader2, Zap } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -28,7 +28,7 @@ const QUICK_CHIPS = [
   'Schedule reminder',
 ];
 
-const API = 'http://localhost:5000/api/ai';
+
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -66,7 +66,7 @@ export function ChatAssistant() {
       pendingToolCall?: { name: string; args: any };
       confirmed?: boolean;
     }) => {
-      const res = await axios.post(`${API}/chat`, payload, { withCredentials: true });
+      const res = await api.post('/api/ai/chat', payload);
       return res.data;
     },
 

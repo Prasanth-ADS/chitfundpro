@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../lib/api';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Circle, Clock, Lock, ShieldAlert, Trophy } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -13,7 +13,7 @@ export function PoolDetail() {
   const { data: pool, isLoading } = useQuery({
     queryKey: ['pool', id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/pools/${id}`, { withCredentials: true });
+      const res = await api.get(`/api/pools/${id}`);
       return res.data;
     }
   });
@@ -31,7 +31,7 @@ export function PoolDetail() {
     setIsAiLoading(true);
     setAiSuggestion(null);
     try {
-      const res = await axios.get(`http://localhost:5000/api/ai/pot-suggestion/${id}`, { withCredentials: true });
+      const res = await api.get(`/api/ai/pot-suggestion/${id}`);
       setAiSuggestion(res.data);
     } catch (error) {
       console.error('Failed to get AI target:', error);
@@ -42,14 +42,14 @@ export function PoolDetail() {
 
   const assignPotMutation = useMutation({
     mutationFn: async ({ amount, month }: any) => {
-      await axios.post('http://localhost:5000/api/pots', {
+      await api.post('/api/pots', {
         poolId: id,
         month,
         enrollmentId: selectedRecipientId,
         potAmount: amount,
         paymentMode,
         notes: potNotes
-      }, { withCredentials: true });
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pool', id] });
@@ -64,10 +64,10 @@ export function PoolDetail() {
 
   const overrideMutation = useMutation({
     mutationFn: async ({ assignmentId, enrollmentId, notes }: any) => {
-      await axios.put(`http://localhost:5000/api/pots/${assignmentId}`, {
+      await api.put(`/api/pots/${assignmentId}`, {
         enrollmentId,
         notes
-      }, { withCredentials: true });
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pool', id] });
@@ -242,7 +242,7 @@ export function PoolDetail() {
                 {aiSuggestion ? (
                   <div className="animate-in fade-in slide-in-from-top-1 duration-300">
                     <p className="text-xs font-medium text-purple-900 mb-1">
-                      Recommended: <span className="font-bold underline">{eligibleMembers.find(e => e.id === aiSuggestion.suggestedMemberId)?.member?.fullName || 'Selected Member'}</span>
+                      Recommended: <span className="font-bold underline">{eligibleMembers.find((e: any) => e.id === aiSuggestion.suggestedMemberId)?.member?.fullName || 'Selected Member'}</span>
                     </p>
                     <p className="text-[11px] text-purple-700 italic leading-relaxed mb-3">"{aiSuggestion.reason}"</p>
                     <Button 

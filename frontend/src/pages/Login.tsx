@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -18,7 +18,7 @@ export function Login() {
     queryKey: ['auth-me'],
     queryFn: async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/me", { withCredentials: true });
+        const res = await api.get("/api/auth/me");
         return res.data;
       } catch (err) {
         return null;
@@ -45,7 +45,7 @@ export function Login() {
     e.preventDefault();
     setError("");
     try {
-      await axios.post("http://localhost:5000/api/auth/login", { email, password }, { withCredentials: true });
+      await api.post("/api/auth/login", { email, password });
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid email or password");
