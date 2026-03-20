@@ -45,6 +45,10 @@ app.use('/api/ai', aiRoutes);
 // Test DB Connection and Start Server
 const PORT = process.env.PORT || 5000;
 
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
