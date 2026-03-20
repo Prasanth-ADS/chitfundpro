@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
 import { Save, Bell, Smartphone, Send, Clock, CheckCircle, XCircle, Wifi, QrCode, LogOut } from 'lucide-react';
