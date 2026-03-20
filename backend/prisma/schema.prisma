@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Scheme {
+  id               String   @id @default(uuid())
+  name             String
+  poolAmount       Int
+  numberOfMembers  Int      @default(20)
+  numberOfMonths   Int      @default(20)
+  paymentSchedule  String   // Storing JSON as string for simplicity in SQLite or use String if Json isn't well supported. Wait, Prisma SQLite supports Json? Yes, in Prisma 5+ it creates a TEXT column but you can type it as String and parse it, or type as Json. I'll use String to be completely safe with SQLite, wait, no, Prisma SQLite doesn't natively support JSON but it handles it. No, SQLite Prisma has varying support for Json depending on version. String is safer. I'll use String.
+  payoutSchedule   String   
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  pools            Pool[]
+}
+
+model Pool {
+  id            String       @id @default(uuid())
+  name          String
+  schemeId      String
+  scheme        Scheme       @relation(fields: [schemeId], references: [id])
+  startDate     DateTime
+  status        String       @default("UPCOMING") // UPCOMING, ACTIVE, COMPLETED
+  currentMonth  Int          @default(1)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  enrollments   Enrollment[]
+  potAssignments PotAssignment[]
+}
+
+model Member {
+  id               String       @id @default(uuid())
+  fullName         String
+  phone            String       @unique
+  alternatePhone   String?
+  address          String
+  aadhaarReference String
+  panReference     String
+  nomineeName      String
+  nomineePhone     String
+  status           String       @default("ACTIVE") // ACTIVE, DEFAULTER, COMPLETED
+  
+  // AI Risk Profiling Cache
+  riskLevel        String?      // Low, Medium, High
+  riskReason       String?
+  riskCalculatedAt DateTime?
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  enrollments      Enrollment[]
+}
+
+model Enrollment {
+  id               String    @id @default(uuid())
+  memberId         String
+  member           Member    @relation(fields: [memberId], references: [id])
+  poolId           String
+  pool             Pool      @relation(fields: [poolId], references: [id])
+  slotNumber       Int       // 1-20
+  potReceived      Boolean   @default(false)
+  potReceivedMonth Int?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  payments         Payment[]
+  potAssignments   PotAssignment[]
+
+  @@unique([memberId, poolId])
+  @@unique([poolId, slotNumber])
+}
+
+model Payment {
+  id           String     @id @default(uuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  month        Int
+  amountDue    Int        @default(0)
+  amountPaid   Int        @default(0)
+  lateFee      Int        @default(0)
+  paymentMode  String     @default("CASH") // CASH, UPI, BANK
+  status       String     @default("PAID") // PAID, PARTIAL, ADVANCE
+  notes        String?
+  paidAt       DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([enrollmentId, month])
+}
+
+model PotAssignment {
+  id           String     @id @default(uuid())
+  poolId       String
+  pool         Pool       @relation(fields: [poolId], references: [id])
+  month        Int
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  potAmount    Int
+  paymentMode  String     @default("BANK")
+  notes        String?
+  assignedAt   DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([poolId, month])
+}
+
+model AppSettings {
+  id            String   @id @default("singleton")
+  reminderDay   Int      @default(5)
+  autoReminders Boolean  @default(false)
+  companyName   String   @default("ChitFund Pro")
+  ownerPhone    String   @default("")
+  updatedAt     DateTime @updatedAt
+}
+
+model NotificationLog {
+  id             String   @id @default(uuid())
+  memberName     String
+  phone          String
+  messageContent String
+  status         String   @default("SENT")
+  errorMessage   String?
+  sentAt         DateTime @default(now())
+}
+
+model ScheduledReminder {
+  id              String   @id @default(cuid())
+  targetType      String   // 'pool' | 'all_pools' | 'member'
+  targetId        String?
+  targetName      String?
+  dayOfMonth      Int
+  messageOverride String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+}
