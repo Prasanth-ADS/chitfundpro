@@ -29,6 +29,7 @@ export function Sidebar() {
   const handleLogout = async () => {
     try {
       await api.post("/api/auth/logout", {});
+      localStorage.removeItem('token');
       navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);

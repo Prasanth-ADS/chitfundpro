@@ -30,7 +30,10 @@ router.post('/login', async (req: Request, res: Response) => {
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
   
-  return res.json({ message: 'Logged in successfully' });
+  return res.json({ 
+    message: 'Logged in successfully',
+    token: token 
+  });
 });
 
 router.post('/logout', (req: Request, res: Response) => {

@@ -45,7 +45,10 @@ export function Login() {
     e.preventDefault();
     setError("");
     try {
-      await api.post("/api/auth/login", { email, password });
+      const { data } = await api.post("/api/auth/login", { email, password });
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
       navigate("/dashboard");
     } catch (err: any) {
       console.error('Login error:', err.response?.data || err.message);
