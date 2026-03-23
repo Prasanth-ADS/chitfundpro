@@ -25,8 +25,8 @@ router.post('/login', async (req: Request, res: Response) => {
   
   res.cookie('token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: true,
+    sameSite: 'none',
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
   
@@ -39,20 +39,7 @@ router.post('/logout', (req: Request, res: Response) => {
 });
 
 router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: req.email },
-      select: { id: true, email: true, createdAt: true }
-    });
-    
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  res.json({ email: req.email });
 });
 
 export default router;
