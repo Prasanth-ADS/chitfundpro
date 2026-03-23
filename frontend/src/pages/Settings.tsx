@@ -20,7 +20,7 @@ export function Settings() {
   const { data: logs } = useQuery({
     queryKey: ['notification-logs'],
     queryFn: async () => {
-      const res = await api.get('/api/notifications/log');
+      const res = await api.get('/api/notifications/logs');
       return res.data;
     },
     refetchInterval: 10000 // Poll every 10s for new logs

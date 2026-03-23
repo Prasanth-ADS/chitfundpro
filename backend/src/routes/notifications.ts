@@ -7,7 +7,7 @@ import { sendWhatsAppMessage } from '../services/whatsapp';
 const router = Router();
 
 // Get notification log
-router.get('/log', authenticate, async (req: Request, res: Response) => {
+router.get('/logs', authenticate, async (req: Request, res: Response) => {
   try {
     const logs = await prisma.notificationLog.findMany({
       orderBy: { sentAt: 'desc' },

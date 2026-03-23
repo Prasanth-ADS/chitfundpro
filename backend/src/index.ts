@@ -15,6 +15,7 @@ import dashboardRoutes from './routes/dashboard';
 import reportsRoutes from './routes/reports';
 import whatsappRoutes from './routes/whatsapp';
 import aiRoutes from './routes/ai';
+import analyticsRoutes from './routes/analytics';
 import { initScheduler } from './services/scheduler';
 import { initWhatsApp } from './services/whatsapp';
 
@@ -40,13 +41,14 @@ app.use('/api/pools', poolRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/pots', potRoutes);
+app.use('/api/pot-assignments', potRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/whatsapp', whatsappRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Test DB Connection and Start Server
 const PORT = process.env.PORT || 5000;
