@@ -9,32 +9,28 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersafejwtsecret12345';
 
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
-  try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
-
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    });
-
-    res.json({ message: 'Logged in successfully' });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+  
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  
+  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ message: 'Invalid credentials' });
   }
+  
+  const token = jwt.sign(
+    { email },
+    process.env.JWT_SECRET!,
+    { expiresIn: '7d' }
+  );
+  
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+  
+  return res.json({ message: 'Logged in successfully' });
 });
 
 router.post('/logout', (req: Request, res: Response) => {
@@ -45,7 +41,7 @@ router.post('/logout', (req: Request, res: Response) => {
 router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: req.userId },
+      where: { email: req.email },
       select: { id: true, email: true, createdAt: true }
     });
     
