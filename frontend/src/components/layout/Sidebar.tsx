@@ -29,10 +29,11 @@ export function Sidebar() {
   const handleLogout = async () => {
     try {
       await api.post("/api/auth/logout", {});
+    } catch (error) {
+      console.error("Logout API failed, continuing with local logout", error);
+    } finally {
       localStorage.removeItem('token');
       navigate("/login");
-    } catch (error) {
-      console.error("Logout failed", error);
     }
   };
 

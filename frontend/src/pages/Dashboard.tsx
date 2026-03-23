@@ -22,7 +22,9 @@ export function Dashboard() {
 
   if (isLoading) return <div className="p-6">Loading dashboard metrics...</div>;
 
-  const collectionPercentage = stats ? Math.round((stats.collectionProgress.collected / stats.collectionProgress.expected) * 100) : 0;
+  const collectionPercentage = stats && stats.collectionProgress.expected > 0
+    ? Math.round((stats.collectionProgress.collected / stats.collectionProgress.expected) * 100)
+    : 0;
 
   return (
     <div className="flex flex-col gap-6">
