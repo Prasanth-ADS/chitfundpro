@@ -13,7 +13,11 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
     });
     res.json(pools);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in pools.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -25,7 +29,11 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
     });
     res.json(pool);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in pools.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -50,7 +58,11 @@ router.get('/:id', authenticate, async (req: Request, res: Response) => {
     pool.scheme.payoutSchedule = JSON.parse(pool.scheme.payoutSchedule as unknown as string);
     res.json(pool);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in pools.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -67,7 +79,11 @@ router.put('/:id', authenticate, async (req: Request, res: Response) => {
     });
     res.json(pool);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in pools.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 

@@ -89,8 +89,8 @@ export function MemberDetail() {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div><p className="text-muted-foreground mb-1">Phone</p><p className="font-medium">{member.phone}</p></div>
             <div><p className="text-muted-foreground mb-1">Alt Phone</p><p className="font-medium">{member.alternatePhone || 'N/A'}</p></div>
-            <div><p className="text-muted-foreground mb-1">Aadhaar</p><p className="font-medium">{member.aadhaarReference}</p></div>
-            <div><p className="text-muted-foreground mb-1">PAN</p><p className="font-medium">{member.panReference}</p></div>
+            <div><p className="text-muted-foreground mb-1">Aadhaar</p><p className="font-medium">{member.aadhaarRef}</p></div>
+            <div><p className="text-muted-foreground mb-1">PAN</p><p className="font-medium">{member.panRef}</p></div>
             <div className="col-span-2"><p className="text-muted-foreground mb-1">Address</p><p className="font-medium">{member.address}</p></div>
             <div className="col-span-2 border-t pt-4 mt-2">
               <h3 className="font-medium mb-3">Nominee Information</h3>

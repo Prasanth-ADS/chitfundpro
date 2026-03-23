@@ -57,7 +57,11 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
     }
     res.json(members);
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error in members.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal Server Error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -66,7 +70,11 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
     const member = await prisma.member.create({ data: req.body });
     res.json(member);
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error in members.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal Server Error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -94,7 +102,11 @@ router.get('/:id', authenticate, async (req: Request, res: Response) => {
 
     res.json(member);
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error in members.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal Server Error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -106,7 +118,11 @@ router.put('/:id', authenticate, async (req: Request, res: Response) => {
     });
     res.json(member);
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error in members.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal Server Error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -121,7 +137,11 @@ router.delete('/:id', authenticate, async (req: Request, res: Response) => {
     await prisma.member.delete({ where: { id } });
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error in members.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal Server Error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 

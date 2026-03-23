@@ -15,8 +15,8 @@ interface Member {
   phone: string;
   alternatePhone?: string;
   address: string;
-  aadhaarReference?: string;
-  panReference?: string;
+  aadhaarRef?: string;
+  panRef?: string;
   nomineeName?: string;
   nomineePhone?: string;
   status: string;
@@ -27,7 +27,7 @@ interface Member {
 
 const emptyForm = {
   fullName: '', phone: '', alternatePhone: '', address: '',
-  aadhaarReference: '', panReference: '', nomineeName: '', nomineePhone: ''
+  aadhaarRef: '', panRef: '', nomineeName: '', nomineePhone: ''
 };
 
 export function Members() {
@@ -79,8 +79,8 @@ export function Members() {
     setEditingId(m.id);
     setEditData({
       fullName: m.fullName, phone: m.phone, alternatePhone: m.alternatePhone || '',
-      address: m.address, aadhaarReference: m.aadhaarReference || '',
-      panReference: m.panReference || '', nomineeName: m.nomineeName || '',
+      address: m.address, aadhaarRef: m.aadhaarRef || '',
+      panRef: m.panRef || '', nomineeName: m.nomineeName || '',
       nomineePhone: m.nomineePhone || ''
     });
   };
@@ -124,11 +124,11 @@ export function Members() {
             </div>
             <div className="grid gap-2">
               <Label>Aadhaar Reference <span className="text-xs text-muted-foreground">(optional)</span></Label>
-              <Input value={formData.aadhaarReference} onChange={e => setFormData({ ...formData, aadhaarReference: e.target.value })} />
+              <Input value={formData.aadhaarRef} onChange={e => setFormData({ ...formData, aadhaarRef: e.target.value })} />
             </div>
             <div className="grid gap-2">
               <Label>PAN Reference <span className="text-xs text-muted-foreground">(optional)</span></Label>
-              <Input value={formData.panReference} onChange={e => setFormData({ ...formData, panReference: e.target.value })} />
+              <Input value={formData.panRef} onChange={e => setFormData({ ...formData, panRef: e.target.value })} />
             </div>
             <div className="grid gap-2">
               <Label>Nominee Name <span className="text-xs text-muted-foreground">(optional)</span></Label>
@@ -237,11 +237,11 @@ export function Members() {
                         </div>
                         <div className="grid gap-1.5">
                           <Label className="text-xs">Aadhaar Ref</Label>
-                          <Input value={editData.aadhaarReference} onChange={e => setEditData({ ...editData, aadhaarReference: e.target.value })} />
+                          <Input value={editData.aadhaarRef} onChange={e => setEditData({ ...editData, aadhaarRef: e.target.value })} />
                         </div>
                         <div className="grid gap-1.5">
                           <Label className="text-xs">PAN Ref</Label>
-                          <Input value={editData.panReference} onChange={e => setEditData({ ...editData, panReference: e.target.value })} />
+                          <Input value={editData.panRef} onChange={e => setEditData({ ...editData, panRef: e.target.value })} />
                         </div>
                         <div className="grid gap-1.5">
                           <Label className="text-xs">Nominee Name</Label>

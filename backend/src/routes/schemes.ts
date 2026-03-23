@@ -15,7 +15,11 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
     }));
     res.json(parsedSchemes);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in schemes.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -38,7 +42,11 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
     });
     res.json({ ...scheme, paymentSchedule: ps, payoutSchedule: pos });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in schemes.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -52,7 +60,11 @@ router.get('/:id', authenticate, async (req: Request, res: Response) => {
       payoutSchedule: JSON.parse(scheme.payoutSchedule)
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in schemes.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
@@ -65,7 +77,11 @@ router.put('/:id', authenticate, async (req: Request, res: Response) => {
     });
     res.json({ ...scheme, paymentSchedule: JSON.parse(scheme.paymentSchedule), payoutSchedule: JSON.parse(scheme.payoutSchedule) });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Detailed error in schemes.ts:', error);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 });
 
