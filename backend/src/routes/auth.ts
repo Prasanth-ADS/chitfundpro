@@ -10,8 +10,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersafejwtsecret12345';
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
   
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'prasanthselvaads@gmail.com';
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '75300@Prx';
   
   if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
     return res.status(401).json({ message: 'Invalid credentials' });
@@ -19,7 +19,7 @@ router.post('/login', async (req: Request, res: Response) => {
   
   const token = jwt.sign(
     { email },
-    process.env.JWT_SECRET!,
+    JWT_SECRET,
     { expiresIn: '7d' }
   );
   
